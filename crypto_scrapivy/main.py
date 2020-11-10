@@ -39,8 +39,6 @@ def transaction_scraper():
     return recent_transaction_url_stripped
 
 def transaction_detail_scraper(transaction_url):
-    #transaction_url = "/tx/0xd85247233f3b91faafe2e9cc320ba84f1671571c47132893205645b9466cfcbb" # niet succesvol
-    #transaction_url = "/tx/0xc105f1f938fc3e89b0ec549b0005714e8fc95fc276eaa3af0f73e6bddb559349" # wel succesvol
     page = "https://etherscan.io{}".format(transaction_url)
     source = requests.get(page, headers=headers)
     soup = BeautifulSoup(source.content, 'html.parser')
@@ -57,8 +55,6 @@ def transaction_detail_scraper(transaction_url):
         print(info)
         return info
 
-#https://etherscan.io/tx/0xd64f38e6d5b0cc3cbe289761ed0ab0b610205c2a68c35fe800bc1f58451655b2
-
 def telegram_bot_sendtext(bot_message, tx_hash):
     page = "https://etherscan.io{}".format(tx_hash)
     bot_message = 'New transaction: ' + bot_message + ' Link: ' + page
@@ -69,4 +65,3 @@ def telegram_bot_sendtext(bot_message, tx_hash):
 
 
 main()
-#transaction_detail_scraper("/tx/0xd64f38e6d5b0cc3cbe289761ed0ab0b610205c2a68c35fe800bc1f58451655b2")
