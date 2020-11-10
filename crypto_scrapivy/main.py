@@ -3,6 +3,7 @@ import os
 import requests
 import time
 from bs4 import BeautifulSoup
+import random
 
 bot_token = str(input("Please enter security token:"))
 bot_chatID = '832555466'
@@ -29,7 +30,7 @@ def main():
             except:
                 print("Could not send data over telegram api\n")
         recent_tx = temp
-        time.sleep(60)
+        time.sleep(random.randint(54,66))
 
 def transaction_scraper():
     source = requests.get(page, headers=headers)
