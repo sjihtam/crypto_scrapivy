@@ -4,6 +4,7 @@ import requests
 import time
 from bs4 import BeautifulSoup
 import random
+import re
 
 bot_token = str(input("Please enter security token:"))
 bot_chatID = '832555466'
@@ -24,6 +25,7 @@ def main():
             print("Found new transaction!\n")
             try:
                 msg = transaction_detail_scraper(temp)
+                print("gelukt")
                 telegram = telegram_bot_sendtext(msg, temp)
                 print("Following data was send: \n")
                 print(telegram)
@@ -44,15 +46,31 @@ def transaction_detail_scraper(transaction_url):
     source = requests.get(page, headers=headers)
     soup = BeautifulSoup(source.content, 'html.parser')
     try:
-        Token_from = str(soup.select("a.d-inline-block , .d-inline-block:nth-child(7)")[0]).split(">")[1].split("<")[0]
-        Token_from_amount = str(soup.select(".d-inline-block:nth-child(2)")[1]).split(">")[1].split("<")[0]
-        Token_to = str(soup.select(".d-inline-block:nth-child(7)")[0]).split(">")[1].split("<")[0]
-        Token_to_amount = str(soup.select(".d-inline-block~ .text-secondary+ .d-inline-block")[0]).split(">")[1].split("<")[0]
-        info = Token_from_amount + "  " + Token_from + " > " + Token_to_amount + "  " + Token_to
-        print(info)
-        return info
+        # hier wordt gecheckt of de betaling succesvol was
+
+        if (str(soup.select(".u-label--success"))):
+            factor = str(soup.select(".u-label--success"))
+            print(factor[1])
+            if factor[1] == "]":
+                print("Failure")
+                info = "Failed transaction"
+                return info
+            else:
+                print("Succes")
+                info = str(soup.select(".d-inline-block"))
+                clean = re.compile('<.*?>') #regex
+                info = re.sub(clean, '', info)
+                if (info=="[Explorers]"):
+                    waarde = str(soup.select("#ContentPlaceHolder1_spanValue"))
+                    waarde = re.sub(clean, '', waarde)
+                    info = "Transactie naar ander etherium adres van: " + waarde
+                    return info
+                else:
+                    print(info)
+                    return info
+
     except:
-        info = "Failed transaction"
+        info = "Failed transaction via exception"
         print(info)
         return info
 
@@ -64,5 +82,10 @@ def telegram_bot_sendtext(bot_message, tx_hash):
     response = requests.get(send_text)
     return response.json()
 
+#Token_from = str(soup.select("a.d-inline-block , .d-inline-block:nth-child(7)")[0]).split(">")[1].split("<")[0]
+#Token_from_amount = str(soup.select(".d-inline-block:nth-child(2)")[1]).split(">")[1].split("<")[0]
+#Token_to = str(soup.select(".d-inline-block:nth-child(7)")[0]).split(">")[1].split("<")[0]
+#Token_to_amount = str(soup.select(".d-inline-block~ .text-secondary+ .d-inline-block")[0]).split(">")[1].split("<")[0]
+#info = Token_from_amount + "  " + Token_from + " > " + Token_to_amount + "  " + Token_to
 
 main()
