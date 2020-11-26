@@ -7,7 +7,7 @@ import random
 import re
 
 bot_token = str(input("Please enter security token:"))
-bot_chatID = '832555466'
+bot_chatID = '@cryptomattie'#'832555466'
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'}
 page = "https://etherscan.io/address/0x66aeeadd49026a7cfbde0240a7b148f18966b7b7#tokentxns"
 #change the page variable to a preffered address.
